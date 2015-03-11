@@ -35,5 +35,32 @@ a {
 {
     position: absolute;
     width: 100%;
-    background-color: red;
+    background-color: #FF9233;
+}
+.start_time,.end_time
+{
+    margin-left:auto;
+    margin-right:auto;
+    max-width: 300px;
+    text-align: center;
+}
+.end_time_block
+{
+    position:absolute;
+    bottom:0;
+    width:100%;
+}
+.start_time_block,
+.end_time_block
+{
+    background-color: #444;
+    color:white;
+}
+.end_time
+{
+    margin-bottom: 0;
+}
+.content_block
+{
+    padding-left: 10px;
 }
