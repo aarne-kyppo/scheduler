@@ -6,3 +6,34 @@ body {
 a {
   color: #00B7FF;
 }
+.tthour
+{
+    background-color: dodgerblue;
+}
+#headers,#lessonsarea
+{
+    padding:0;
+}
+#headers .tthour .row_start_time
+{
+    margin:auto;
+    color:white;
+}
+#headers .tthour
+{
+    min-height: 150px;
+    padding-left: 15px;
+    padding-top: 10px;
+    border-bottom: 1px solid black;
+}
+#lessonsarea
+{
+    height: 100%;
+    background-color: #eee;
+}
+.lessondiv
+{
+    position: absolute;
+    width: 100%;
+    background-color: red;
+}

@@ -2,4 +2,14 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  #timetable.container-fluid
+    .row
+        #headers.col-lg-1.col-xs-3
+            for hour in hours
+                if hour > 9
+                    .tthour(id="#{hour}")
+                        h2.row_start_time= hour
+                else
+                    .tthour(id="0#{hour}")
+                        h2.row_start_time 0!{hour}
+        #lessonsarea.col-lg-4.col-xs-9
