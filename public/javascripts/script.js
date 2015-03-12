@@ -1,4 +1,5 @@
 (function(){
+var all_lessons = [];
 function addLesson(ttdom,rowheight,top,start_time,end_time,title,lecturer,groups,room)
 {
     var start = start_time.split(":");
@@ -20,6 +21,7 @@ function addLesson(ttdom,rowheight,top,start_time,end_time,title,lecturer,groups
     var lessondiv = generate_lesson_div(start_time,end_time,title,lecturer,groups,room);
     ttdom.append(lessondiv);
     setDimensions(lessondiv,start_top,height);
+    return lessondiv;
 }
 function setDimensions(div,top,p_height)
 {
@@ -47,13 +49,11 @@ function generate_lesson_div(start_time, end_time, title, lecturer, groups, room
     
     return lessondiv
 }
-$(document).ready(function(){
-    var ttdiv = $("#lessonsarea");
-    //var content_cell_left $("#timetable > #08").offset().left;
-    //alert(content_cell_left);
-    $("#lessonsarea").height($("#headers").height());
+function request_lessons(url)
+{
+    var ttdiv = $('#lessonsarea');
     $.ajax({
-        url: '/lessons/test',
+        url: url,
         success: function(lessons){
             if(lessons)
             {
@@ -70,10 +70,45 @@ $(document).ready(function(){
                 for(var i=0;i<lessons.length;i++)
                 {
                     var lesson = lessons[i];
-                    addLesson(ttdiv,rowheight,ttdiv.offset().top,lesson.start_time,lesson.end_time,lesson.title,lesson.lecturer,lesson.groups,lesson.room);
+                    all_lessons.push(addLesson(ttdiv,rowheight,ttdiv.offset().top,lesson.start_time,lesson.end_time,lesson.title,lesson.lecturer,lesson.groups,lesson.room));
                 }
             }
         }
+    });
+}
+$(document).ready(function(){
+    var ttdiv = $("#lessonsarea");
+    //var content_cell_left $("#timetable > #08").offset().left;
+    //alert(content_cell_left);
+    $("#lessonsarea").height($("#headers").height());
+    /*$.ajax({
+        url: '/lessons/test',
+        success: function(lessons){
+            if(lessons)
+            {
+                var rowheight = $("#08").height();//Dont read this :D
+                if(!lessons instanceof Array)
+                {
+                    lessons = [lessons,];
+                }
+                console.log(lessons);
+                for(var i=0;i<lessons.length;i++)
+                {
+                    var lesson = lessons[i];
+                     all_lessons.push(addLesson(ttdiv,rowheight,ttdiv.offset().top,lesson.start_time,lesson.end_time,lesson.title,lesson.lecturer,lesson.groups,lesson.room));
+                }
+            }
+        }
+    });*/
+    $('#groupselector').change(function(){
+        all_lessons.forEach(function(elem){
+            elem.remove();
+        });
+        all_lessons = [];
+        all_lessons.length = 0;
+        $('#groupselector option:selected').each(function(){
+            request_lessons('/lessons/group/' + $(this).text());
+        });
     });
 });
 })();

@@ -2,6 +2,18 @@ extends layout
 
 block content
   h1= title
+  .panel-group#options(role='tablist', aria-multiselectable='true')
+      .panel.panel-default
+        .panel-heading(role='tab', id='heading')
+            h4.panel-title
+                a(data-toggle='collapse',data-parent='#options', href='#optionsbody',aria-expanded='true', aria-controls='optionsbody') Options
+        #optionsbody.panel-collapse.collapse.in
+            .panel-body
+                form(method='POST', action='/options/group',id='groupform')
+                    .form-group
+                        select#groupselector(name='group')
+                            for group in groups
+                                option(value='!{group}')= group
   #timetable.container-fluid
     .row
         #headers.col-lg-1.col-xs-3
