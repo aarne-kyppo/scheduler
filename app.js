@@ -56,5 +56,5 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(8000);
+app.listen(8000,process.argv[2]);
 module.exports = app;

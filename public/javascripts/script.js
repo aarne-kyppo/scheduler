@@ -80,26 +80,10 @@ $(document).ready(function(){
     var ttdiv = $("#lessonsarea");
     //var content_cell_left $("#timetable > #08").offset().left;
     //alert(content_cell_left);
+    
     $("#lessonsarea").height($("#headers").height());
-    /*$.ajax({
-        url: '/lessons/test',
-        success: function(lessons){
-            if(lessons)
-            {
-                var rowheight = $("#08").height();//Dont read this :D
-                if(!lessons instanceof Array)
-                {
-                    lessons = [lessons,];
-                }
-                console.log(lessons);
-                for(var i=0;i<lessons.length;i++)
-                {
-                    var lesson = lessons[i];
-                     all_lessons.push(addLesson(ttdiv,rowheight,ttdiv.offset().top,lesson.start_time,lesson.end_time,lesson.title,lesson.lecturer,lesson.groups,lesson.room));
-                }
-            }
-        }
-    });*/
+    var group = $('#groupselector option:selected').val();
+    request_lessons('/lessons/json/group/' + group);
     $('#groupselector').change(function(){
         all_lessons.forEach(function(elem){
             elem.remove();
@@ -107,7 +91,7 @@ $(document).ready(function(){
         all_lessons = [];
         all_lessons.length = 0;
         $('#groupselector option:selected').each(function(){
-            request_lessons('/lessons/group/' + $(this).text());
+            $('#groupform').submit();
         });
     });
 });

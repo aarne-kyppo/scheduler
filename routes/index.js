@@ -27,15 +27,14 @@ router.param('group',function(req,res,next,group){
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var hours = _.range(8,21);
-    console.log(req.cookies.group);
-    res.render('index',{hours: hours, title: 'Scheduler', groups: req.groups});
+    res.render('index',{hours: hours, title: 'Scheduler', groups: req.groups, selectedgroup: undefined});
 });
-router.post('/options/group/:group',function(req,res,next){
-    if(req.body.group)
-    {
-        req.cookies.group = req.group;
-    }
-    res.redirect('/');
+router.get('/lessons/group/:group', function(req, res, next) {
+    var hours = _.range(8,21);
+    res.render('index',{hours: hours, title: 'Scheduler', groups: req.groups, selectedgroup: req.group});
+});
+router.post('/options/group/',function(req,res,next){
+    res.redirect('/lessons/group/' + req.body.group);
 });
 
 router.get('/lessons/test',function(req,res,next){
@@ -44,7 +43,7 @@ router.get('/lessons/test',function(req,res,next){
         res.json(lessons);
     });
 });
-router.get('/lessons/group/:group',function(req,res,next){
+router.get('/lessons/json/group/:group',function(req,res,next){
     console.log(req.group);
     mongo.lessons.find({start_date: '2015-05-11', groups: req.group},function(err,lessons){
         res.json(lessons);

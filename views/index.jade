@@ -13,7 +13,10 @@ block content
                     .form-group
                         select#groupselector(name='group')
                             for group in groups
-                                option(value='!{group}')= group
+                                if selectedgroup == group
+                                    option(value='#{group}',selected)= group
+                                else
+                                    option(value='#{group}')= group
   #timetable.container-fluid
     .row
         #headers.col-lg-1.col-xs-3
