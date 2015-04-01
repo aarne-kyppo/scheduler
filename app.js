@@ -10,6 +10,12 @@ var users = require('./routes/users');
 
 var app = express();
 
+/*Because of nginx rewrite problems.
+ *Not optimal solution. Working to get
+ *working nginx conf, so that there wouldn't be
+ *a need to modify app for production purposes.*/
+app.locals.rooturl = process.argv[3] || '/scheduler';
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -56,5 +62,5 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(8000,process.argv[2]);
+app.listen(8000,process.argv[2] || '127.0.0.1');
 module.exports = app;

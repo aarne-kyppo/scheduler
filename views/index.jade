@@ -9,7 +9,7 @@ block content
                 a(data-toggle='collapse',data-parent='#options', href='#optionsbody',aria-expanded='true', aria-controls='optionsbody') Options
         #optionsbody.panel-collapse.collapse.in
             .panel-body
-                form(method='POST', action='/options/group',id='groupform')
+                form(method='POST', action='#{rooturl}/options/group',id='groupform')
                     .form-group
                         select#groupselector(name='group')
                             for group in groups

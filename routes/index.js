@@ -27,14 +27,14 @@ router.param('group',function(req,res,next,group){
 /* GET home page. */
 router.get('/', function(req, res, next) {
     var hours = _.range(8,21);
-    res.render('index',{hours: hours, title: 'Scheduler', groups: req.groups, selectedgroup: undefined});
+    res.render('index',{hours: hours, title: 'Scheduler', groups: req.groups, selectedgroup: undefined, rooturl: req.app.locals.rooturl});
 });
 router.get('/lessons/group/:group', function(req, res, next) {
     var hours = _.range(8,21);
-    res.render('index',{hours: hours, title: 'Scheduler', groups: req.groups, selectedgroup: req.group});
+    res.render('index',{hours: hours, title: 'Scheduler', groups: req.groups, selectedgroup: req.group, rooturl: req.app.locals.rooturl});
 });
 router.post('/options/group/',function(req,res,next){
-    res.redirect('/lessons/group/' + req.body.group);
+    res.redirect(req.app.locals.rooturl + '/lessons/group/' + req.body.group);
 });
 
 router.get('/lessons/test',function(req,res,next){

@@ -1,4 +1,6 @@
 (function(){
+/*Yes. I know that code below is painful to read.
+ *Lesson component will be made with Angular.js in the future.*/
 var all_lessons = [];
 function addLesson(ttdom,rowheight,top,start_time,end_time,title,lecturer,groups,room)
 {
@@ -78,12 +80,11 @@ function request_lessons(url)
 }
 $(document).ready(function(){
     var ttdiv = $("#lessonsarea");
-    //var content_cell_left $("#timetable > #08").offset().left;
-    //alert(content_cell_left);
+    var rooturl = $('#rooturl').text();
     
     $("#lessonsarea").height($("#headers").height());
     var group = $('#groupselector option:selected').val();
-    request_lessons('/lessons/json/group/' + group);
+    request_lessons(rooturl + '/lessons/json/group/' + group);
     $('#groupselector').change(function(){
         all_lessons.forEach(function(elem){
             elem.remove();

@@ -4,9 +4,10 @@ html
     title= title
     meta(name='viewport',content='width=device-width,initial-scale=1')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='#{rooturl}/stylesheets/style.css')
   body
+    p#rooturl(style='display:none')= rooturl
     block content
-    script(src='/javascripts/jquery.min.js')
+    script(src='#{rooturl}/javascripts/jquery.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
-    script(src='/javascripts/script.js')
+    script(src='#{rooturl}/javascripts/script.js')
