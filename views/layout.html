@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app='scheduler'>
+    <head>
+        <title>{{title}}</title>
+        <meta name='viewport' content='width=device-width,initial-scale=1'/>
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css'/>
+        <link rel='stylesheet' href='{{rooturl}}/stylesheets/style.css'></link>
+    </head>
+    <body ng-controller='LessonsController as lessons'>
+        <p id='rooturl' style='display: none'>{{rooturl}}</p>
+        {% block content %}
+        {% endblock %}
+        <script type='text/javascript'>
+            var rooturl = '{{rooturl}}';
+        </script>
+        <script type='text/javascript' src='{{rooturl}}/javascripts/jquery.min.js'></script>
+        <script type='text/javascript' src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js'></script>
+        <!--<script type='text/javascript' src='{{rooturl}}/javascripts/script.js'></script>-->
+        <script type='text/javascript' src='{{rooturl}}/angular/angular.js'></script>
+        <script type='text/javascript' src='{{rooturl}}/javascripts/schoolday.js'></script>
+    </body>
+</html>

@@ -1,0 +1,71 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<div id='aboutapp' class='panel-group' role='tablist' aria-multiselectable='true'>
+    <div class='panel panel-default'>
+        <div id='aboutappheading' class='panel-heading' role='tab'>
+            <h4 class=̈́'panel-title'>
+                <a data-toggle='collapse' data-parent='#aboutapp' href='#aboutappbody' aria-expanded='true' aria-controls='aboutappbody'>About application</a>
+            </h4>
+        </div>
+        <div id='aboutappbody' class='panel-collapse collapse'>
+            <div class='panel-body'>
+                <p>This is timetable application for Lapland UAS. This is only development version. Currently it only shows lessons of current day. There is also JSON API for lessons. There is no documentation for that. You can find URLs from /routes/index.js. Source code is available in <a href='https://github.com/aarne-kyppo/scheduler'>here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id='options' class='panel-group' role='tablist' aria-multiselectable='true'>
+    <div class='panel panel-default'>
+        <div id='heading' class='panel-heading' role='tab'>
+            <h4 class=̈́'panel-title'>
+                <a data-toggle='collapse' data-parent='#options' href='#optionsbody' aria-expanded='true' aria-controls='optionsbody'>Options</a>
+            </h4>
+        </div>
+        <div id='optionsbody' class='panel-collapse collapse in'>
+            <div class='panel-body'>
+                <form id='groupform'>
+                    <div class='form-group'>
+                        <label for='group'>Class: </label>
+                        <select id='groupselector' name='group' ng-model='lessons.selectedgroup' ng-change='lessons.groupselected()'>
+                            <option ng-repeat='group in lessons.groups' value='{% raw %}{{ group }}{% endraw %}'>{% raw %}{{ group }}{% endraw %}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='timetable container-fluid'>
+    <div class='schoolday'>
+        <div class='row'>
+            <div class='headers col-lg-1 col-xs-3'>
+                <div class='tthour' ng-repeat='hour in lessons.hours'>
+                    <h2 class='row_start_time'>{% raw %}{{hour}}{% endraw %}</h2>
+                </div>
+            </div>
+            <div class='lessonsarea col-lg-4 col-xs-9' height='{% raw %}{{lessons.lessonsareaheight}}{% endraw %}'>
+                <div class='lessonsdiv' ng-repeat='lesson in lessons.lessons' ng-style='{top: {% raw %}{{lesson.top}}{% endraw %}, height: {% raw %}{{lesson.height}}{% endraw %}}'>
+                    <div class='start_time_block'>
+                        <p class='start_time'>
+                            {% raw %}{{lesson.start_time}}{% endraw %}
+                        </p>
+                    </div>
+                    <div class='content_block'>
+                        <p>
+                            {% raw %}{{lesson.title}}{% endraw %}
+                        </p>
+                        </p>
+                    </div>
+                    <div class='end_time_block'>
+                        <p class='end_time'>
+                            {% raw %}{{lesson.end_time}}{% endraw %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -10,28 +10,29 @@ a {
 {
     background-color: dodgerblue;
 }
-#headers,#lessonsarea
+.headers,.lessonsarea
 {
     padding:0;
 }
-#headers .tthour .row_start_time
+.headers .tthour .row_start_time
 {
     margin:auto;
     color:white;
 }
-#headers .tthour
+.headers .tthour
 {
     min-height: 150px;
     padding-left: 15px;
     padding-top: 10px;
     border-bottom: 1px solid black;
 }
-#lessonsarea
+.lessonsarea
 {
     height: 100%;
     background-color: #eee;
+    position:relative;
 }
-.lessondiv
+.lessonsdiv
 {
     position: absolute;
     width: 100%;
