@@ -9,34 +9,40 @@ app.controller('LessonsController',function($http){
     $('.tthour').height(this.rowheight + 'px');
     this.minuteheight = this.rowheight/60.0;
     this.lessonsareaheight = this.hours.length * this.rowheight;
-    $('.lessonsarea').height(this.lessonsareaheight);
+    this.fetching_lessons_unfinished = true; //To prevent fetching same week many times.
     
     this.groupselected = function(){
         console.log('group selected');
-        scope.getLessons(scope.selectedgroup);
+        scope.lessons = [];
+        scope.getLessons(scope.selectedgroup,null);
     };
-    this.getLessons = function(group){
-        $http.get('/scheduler/lessons/json/group/' + group).success(function (data,status,headers,config){
+    this.getLessons = function(group,selected_date){
+        scope.fetching_lessons_unfinished = true;
+        var url = '/scheduler/lessons/json/group/' + group;
+        if(selected_date)
+        {
+            url = url + '/' + selected_date;
+        }
+        $http.get(url).success(function (data,status,headers,config){
             if(status === 200)
             {
                 console.log(scope);
-                data.map(function(lesson){
-                    var start = lesson.start_time.split(":");
-                    var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
-                    console.log(' scope.rowheight ' + scope.rowheight);
-                    console.log(' scope.minuteheight ' + scope.minuteheight);
-                    console.log(' start0 ' + parseInt(start[0]));
-                    console.log(' scope.hours[0] ' + scope.hours[0])
-                    console.log(' y0 ' + y0)
-                    var end = lesson.end_time.split(":");
-                    var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
-                    
-                    lesson.top = y0;
-                    lesson.height = y1-y0;
-                    return lesson;
-                });
-                scope.lessons = data;
+                for(var i=0;i<data.length;i++)
+                {
+                    for(var j=0;j<data[i].lessons.length;j++)
+                    {
+                        var start = data[i].lessons[j].start_time.split(":");
+                        var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
+                        var end = data[i].lessons[j].end_time.split(":");
+                        var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
+
+                        data[i].lessons[j].top = y0;
+                        data[i].lessons[j].height = y1-y0;
+                    }
+                }
+                $.merge(scope.lessons,data);
             }
+            scope.fetching_lessons_unfinished = false;
         });
     };
     this.calculate_vertical_positions = function(start_time, end_time){
@@ -53,6 +59,15 @@ app.controller('LessonsController',function($http){
                 scope.selectedgroup = data[0];
                 console.log(data[0]);
             }
+        });
+        $(window).scroll(function() {
+           if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
+               console.log(moment(scope.lessons[6].date));
+               if(!scope.fetching_lessons_unfinished)
+               {
+                   scope.getLessons(scope.selectedgroup,moment(scope.lessons[scope.lessons.length-1].date).add(2,'days').format('YYYY-MM-DD'));
+               }
+           }
         });
     };
     this.initialize();

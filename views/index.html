@@ -11,7 +11,9 @@
         </div>
         <div id='aboutappbody' class='panel-collapse collapse'>
             <div class='panel-body'>
-                <p>This is timetable application for Lapland UAS. This is only development version. Currently it only shows lessons of current day. There is also JSON API for lessons. There is no documentation for that. You can find URLs from /routes/index.js. Source code is available in <a href='https://github.com/aarne-kyppo/scheduler'>here</a></p>
+                <p>This is timetable application for Lapland UAS. This is only development version.</p>
+                <p>Currently it only shows lessons of current day. There is also JSON API for lessons. There is no documentation for that. You can find URLs from /routes/index.js.</p>
+                <p>Source code is available in <a href='https://github.com/aarne-kyppo/scheduler'>here</a></p>
             </div>
         </div>
     </div>
@@ -38,32 +40,40 @@
     </div>
 </div>
 <div class='timetable container-fluid'>
-    <div class='schoolday'>
+    <div ng-repeat='schoolday in lessons.lessons' class='schooldaywidget'>
         <div class='row'>
-            <div class='headers col-lg-1 col-xs-3'>
-                <div class='tthour' ng-repeat='hour in lessons.hours'>
-                    <h2 class='row_start_time'>{% raw %}{{hour}}{% endraw %}</h2>
+            <div class='col-lg-2 col-xs-12'>
+                <div class='container-fluid schoolday'>
+                    <div class='dateheader'>
+                        <h3 ng-bind='schoolday.finnishdate' class='schoolday'></h3>
+                    </div>
+                    <div class='headers col-lg-3 col-xs-3'>
+                        <div class='tthour' ng-repeat='hour in lessons.hours'>
+                            <h2 class='row_start_time'>{% raw %}{{hour}}{% endraw %}</h2>
+                        </div>
+                    </div>
+                    <div class='lessonsarea col-lg-9 col-xs-9' ng-style='{height: {% raw %}{{lessons.lessonsareaheight}}{% endraw %}}'>
+                        <div class='lessonsdiv' ng-repeat='lesson in schoolday.lessons' ng-style='{top: {% raw %}{{lesson.top}}{% endraw %}, height: {% raw %}{{lesson.height}}{% endraw %}}'>
+                            <div class='start_time_block'>
+                                <p class='start_time'>
+                                    {% raw %}{{lesson.start_time}}{% endraw %}
+                                </p>
+                            </div>
+                            <div class='content_block'>
+                                <p>
+                                    {% raw %}{{lesson.title}}{% endraw %}
+                                </p>
+                            </div>
+                            <div class='end_time_block'>
+                                <p class='end_time'>
+                                    {% raw %}{{lesson.end_time}}{% endraw %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class='lessonsarea col-lg-4 col-xs-9' height='{% raw %}{{lessons.lessonsareaheight}}{% endraw %}'>
-                <div class='lessonsdiv' ng-repeat='lesson in lessons.lessons' ng-style='{top: {% raw %}{{lesson.top}}{% endraw %}, height: {% raw %}{{lesson.height}}{% endraw %}}'>
-                    <div class='start_time_block'>
-                        <p class='start_time'>
-                            {% raw %}{{lesson.start_time}}{% endraw %}
-                        </p>
-                    </div>
-                    <div class='content_block'>
-                        <p>
-                            {% raw %}{{lesson.title}}{% endraw %}
-                        </p>
-                        </p>
-                    </div>
-                    <div class='end_time_block'>
-                        <p class='end_time'>
-                            {% raw %}{{lesson.end_time}}{% endraw %}
-                        </p>
-                    </div>
-                </div>
+            <div class='col-lg-10'>
             </div>
         </div>
     </div>

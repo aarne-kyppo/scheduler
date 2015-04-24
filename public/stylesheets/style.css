@@ -22,7 +22,7 @@ a {
 .headers .tthour
 {
     min-height: 150px;
-    padding-left: 15px;
+    padding-left: 10px;
     padding-top: 10px;
     border-bottom: 1px solid black;
 }
@@ -64,4 +64,23 @@ a {
 .content_block
 {
     padding-left: 10px;
+}
+.schoolday{
+    background-color: cadetblue;
+    color:white;
+}
+.dateheader{
+    margin-bottom: 0;
+    text-align: center;
+}
+.dateheader h3{
+    margin: 0;
+}
+.schoolday
+{
+    padding: 0;
+}
+.schooldaywidget
+{
+    margin: 25px 0;
 }
