@@ -40,7 +40,7 @@
     </div>
 </div>
 <div class='timetable container-fluid'>
-    <div ng-repeat='schoolday in lessons.lessons' class='schooldaywidget'>
+    <div ng-repeat='schoolday in lessons.lessons' class='schooldaywidget' on-render-finished=''>
         <div class='row'>
             <div class='col-lg-2 col-xs-12'>
                 <div class='container-fluid schoolday'>
@@ -62,6 +62,15 @@
                             <div class='content_block'>
                                 <p>
                                     {% raw %}{{lesson.title}}{% endraw %}
+                                </p>
+                                <p>
+                                  {% raw %}{{lesson.course}}{% endraw %}
+                                </p>
+                                <p>
+                                  {% raw %}{{lesson.room}}{% endraw %}
+                                </p>
+                                <p>
+                                  {% raw %}{{lesson.lecturer}}{% endraw %}
                                 </p>
                             </div>
                             <div class='end_time_block'>

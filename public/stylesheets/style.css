@@ -65,6 +65,10 @@ a {
 {
     padding-left: 10px;
 }
+.content_block p
+{
+    color: #111;
+}
 .schoolday{
     background-color: cadetblue;
     color:white;
