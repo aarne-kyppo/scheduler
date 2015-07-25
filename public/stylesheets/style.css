@@ -72,6 +72,17 @@ a {
 .schoolday{
     background-color: cadetblue;
     color:white;
+    padding-left:0;
+    padding-right:0;
+}
+.schooldaywrapper
+{
+  padding-left:0;
+  padding-right:0;
+}
+.weekwrapper{
+  width: 14.28%;
+  float:left;
 }
 .dateheader{
     margin-bottom: 0;
@@ -80,11 +91,15 @@ a {
 .dateheader h3{
     margin: 0;
 }
-.schoolday
-{
-    padding: 0;
-}
 .schooldaywidget
 {
     margin: 25px 0;
+}
+.schooldayobject{
+  margin: 25px 0;
+  clear: both;
+}
+.schoolweekwidget
+{
+    margin: 0;
 }

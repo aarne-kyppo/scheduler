@@ -15,11 +15,45 @@ router.get('/lessons/group/:group', function(req, res, next) {
 router.post('/options/group/',function(req,res,next){
     res.redirect(req.app.locals.rooturl + '/lessons/group/' + req.body.group);
 });
+/*
+For test data to show sample data on application.
+*/
+router.get('/lessons/json/sampledata/:date?',function(req,res,next){
+    start_date = moment(req.params.date) || moment();
 
-router.get('/lessons/test',function(req,res,next){
-    mongo.lessons.find({start_date: '2015-05-11'},function(err,lessons){
-        res.json(lessons);
-    });
+    var monday = moment(start_date).subtract(start_date.day()-1,'days'); //In this application week starts from monday.
+    var nextmonday = moment(monday).add(1,'w');
+
+    var lessonsarray = [];
+
+    for(var i=0;i<=6;i++)
+    {
+        var dateheader = {
+            date: moment(monday).add(i,'days').format('YYYY-MM-DD'),
+            finnishdate: moment(monday).add(i,'days').format('L'),
+            lessons: []
+        };
+        lessonsarray.push(dateheader);
+    }
+
+    //Generating sample lessons
+    var samplelesson1 = {
+      title: 'Testitunti',
+      start_time: '08:15',
+      end_time: '12:30',
+      lecturer: ['Ossi Opettaja'],
+      room: 'A111',
+
+    };
+    var samplelesson2 = _.clone(samplelesson1);
+    samplelesson2.start_time = '14:00';
+    samplelesson2.end_time = '16:10';
+
+    lessonsarray[0].lessons.push(samplelesson1);
+    lessonsarray[0].lessons.push(samplelesson2);
+    lessonsarray[2].lessons.push(samplelesson1);
+
+    res.json(lessonsarray);
 });
 router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
     console.log(req.params.group);
@@ -29,7 +63,7 @@ router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
     var nextmonday = moment(monday).add(1,'w');
     console.log('monday = ' + monday.format('L') + ' next monday = ' + nextmonday.format('L'));
     var lessonsarray = []; //To decrease calculations in frontend. Filled inside mongodb query callback.
-    
+
     for(var i=0;i<=6;i++)
     {
         var dateheader = {
@@ -52,7 +86,7 @@ router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
     });
 });
 /*
- Fetching groups for select component. 
+ Fetching groups for select component.
 */
 router.get('/groups',function(req,res,next){
     mongo.lessons.distinct('groups',function(err,groups){

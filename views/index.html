@@ -29,10 +29,11 @@
             <div class='panel-body'>
                 <form id='groupform'>
                     <div class='form-group'>
-                        <label for='group'>Class: </label>
-                        <select id='groupselector' name='group' ng-model='lessons.selectedgroup' ng-change='lessons.groupselected()'>
-                            <option ng-repeat='group in lessons.groups' value='{% raw %}{{ group }}{% endraw %}'>{% raw %}{{ group }}{% endraw %}</option>
-                        </select>
+                        <label for='group'>Group: </label>
+                        <groups></groups>
+                        </br>
+                        <label for='sampledata'>Use sample data</label>
+                        <input type='checkbox' ng-model='use_sample_data'/>
                     </div>
                 </form>
             </div>
@@ -40,51 +41,6 @@
     </div>
 </div>
 <div class='timetable container-fluid'>
-    <div ng-repeat='schoolday in lessons.lessons' class='schooldaywidget' on-render-finished=''>
-        <div class='row'>
-            <div class='col-lg-2 col-xs-12'>
-                <div class='container-fluid schoolday'>
-                    <div class='dateheader'>
-                        <h3 ng-bind='schoolday.finnishdate' class='schoolday'></h3>
-                    </div>
-                    <div class='headers col-lg-3 col-xs-3'>
-                        <div class='tthour' ng-repeat='hour in lessons.hours'>
-                            <h2 class='row_start_time'>{% raw %}{{hour}}{% endraw %}</h2>
-                        </div>
-                    </div>
-                    <div class='lessonsarea col-lg-9 col-xs-9' ng-style='{height: {% raw %}{{lessons.lessonsareaheight}}{% endraw %}}'>
-                        <div class='lessonsdiv' ng-repeat='lesson in schoolday.lessons' ng-style='{top: {% raw %}{{lesson.top}}{% endraw %}, height: {% raw %}{{lesson.height}}{% endraw %}}'>
-                            <div class='start_time_block'>
-                                <p class='start_time'>
-                                    {% raw %}{{lesson.start_time}}{% endraw %}
-                                </p>
-                            </div>
-                            <div class='content_block'>
-                                <p>
-                                    {% raw %}{{lesson.title}}{% endraw %}
-                                </p>
-                                <p>
-                                  {% raw %}{{lesson.course}}{% endraw %}
-                                </p>
-                                <p>
-                                  {% raw %}{{lesson.room}}{% endraw %}
-                                </p>
-                                <p>
-                                  {% raw %}{{lesson.lecturer}}{% endraw %}
-                                </p>
-                            </div>
-                            <div class='end_time_block'>
-                                <p class='end_time'>
-                                    {% raw %}{{lesson.end_time}}{% endraw %}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class='col-lg-10'>
-            </div>
-        </div>
-    </div>
+  <school-days view='day'></school-days>
 </div>
 {% endblock %}

@@ -1,5 +1,12 @@
-var app = angular.module('scheduler',[]);
-app.directive('onRenderFinished',function(){
+var app = angular.module('scheduler',['ngRoute']);
+
+app.config(['$routeProvider',function($routeProvider){
+  $routeProvider.when('/test',{
+
+  })
+}]);
+
+app.directive('onRenderFinished',function(){ //Directive to ensure right rendering of dateheaders
   return {
     restrict: 'A',
     link: function(scope,elem,attr){
@@ -11,7 +18,66 @@ app.directive('onRenderFinished',function(){
     }
   }
 });
-app.controller('LessonsController',function($http){
+
+/*
+* Directive to populate group input.
+*/
+app.directive('groups',function($compile){
+  return {
+    restrict: 'E',
+    link: function(scope,elem,attrs,schoolDays){
+      scope.schoolDays = schoolDays;
+    },
+    controller: function($scope,$http)
+    {
+
+      $scope.groupselected = function(){ //Triggers getLessons-function of LessonsController.
+        $scope.lessons.lessons = [];
+        console.log('groups:groupselected');
+        $scope.use_sample_data = false;
+        $scope.lessons.getLessons($scope.lessons.selectedgroup,null);
+      };
+
+      this.initialize = function(){
+        $http.get(rooturl + '/groups').success(function(data,status,headers,config){
+            if(status === 200)
+            {
+                $scope.lessons.groups = data;
+                $scope.lessons.selectedgroup = data[0];
+                console.log($scope.lessons.selectedgroup);
+            }
+        });
+      }
+      this.initialize();
+    },
+    templateUrl: rooturl + '/angular-templates/groups.html',
+  };
+});
+app.directive('schoolDays',function($compile){
+  var rootURL = rooturl + '/angular-templates/';
+  var templates = {
+    week: rootURL + 'weekview.html',
+    day: rootURL + 'dayview.html'
+  }
+  return {
+    templateUrl: function(elem,attr){
+      return templates[attr.view];
+    },
+    controller: function($scope)
+    {
+      $(window).scroll(function() {
+         if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
+           console.log($scope.lessons.lessons.length);
+           if(!$scope.fetching_lessons_unfinished)
+           {
+               $scope.lessons.getLessons($scope.selectedgroup,moment($scope.lessons.lessons[$scope.lessons.lessons.length-1].date).add(2,'days').format('YYYY-MM-DD'));
+           }
+         }
+      });
+    },
+  }
+});
+app.controller('LessonsController',function($scope,$http){ //This controller will be replaced by directive.
 
   var scope = this;
   this.hours = [8,9,10,11,12,13,14,15,16,17,18,19,20];
@@ -22,23 +88,35 @@ app.controller('LessonsController',function($http){
   this.minuteheight = this.rowheight/60.0;
   this.lessonsareaheight = this.hours.length * this.rowheight;
   this.fetching_lessons_unfinished = true; //To prevent fetching same week many times.
+  $scope.use_sample_data = false;
 
-  this.groupselected = function(){
-      console.log('group selected');
+  $scope.$watch('use_sample_data',function(){
+    if($scope.use_sample_data)
+    {
       scope.lessons = [];
-      scope.getLessons(scope.selectedgroup,null);
-  };
+      scope.lessons.length = 0;
+      scope.getLessons();
+    }
+  });
+
   this.getLessons = function(group,selected_date){
       scope.fetching_lessons_unfinished = true;
-      var url = '/scheduler/lessons/json/group/' + group;
-      if(selected_date)
+      var url = "";
+      if($scope.use_sample_data)
       {
+        url = (selected_date) ? rooturl + '/lessons/json/sampledata/' + selected_date : rooturl + '/lessons/json/sampledata';
+      }
+      else{
+        url = rooturl + '/lessons/json/group/' + group;
+        if(selected_date)
+        {
           url = url + '/' + selected_date;
+        }
       }
       $http.get(url).success(function (data,status,headers,config){
           if(status === 200)
           {
-              console.log(scope);
+              console.log("scope");
               for(var i=0;i<data.length;i++)
               {
                   for(var j=0;j<data[i].lessons.length;j++)
@@ -56,34 +134,9 @@ app.controller('LessonsController',function($http){
                   }
               }
               $.merge(scope.lessons,data);
-              console.log(scope.lessons[0].lessons[0].room);
+              console.log(scope.lessons[0].lessons[0]);
           }
           scope.fetching_lessons_unfinished = false;
       });
   };
-  this.calculate_vertical_positions = function(start_time, end_time){
-
-      return  {y0: y0, y1: y1};
-  };
-
-  //Getting all groups to select input.
-  this.initialize = function(){
-      $http.get('/scheduler/groups').success(function(data,status,headers,config){
-          if(status === 200)
-          {
-              scope.groups = data;
-              scope.selectedgroup = data[0];
-              console.log(data[0]);
-          }
-      });
-      $(window).scroll(function() {
-         if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
-             if(!scope.fetching_lessons_unfinished)
-             {
-                 scope.getLessons(scope.selectedgroup,moment(scope.lessons[scope.lessons.length-1].date).add(2,'days').format('YYYY-MM-DD'));
-             }
-         }
-      });
-  };
-  this.initialize();
 });
