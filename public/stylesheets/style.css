@@ -97,9 +97,13 @@ a {
 }
 .schooldayobject{
   margin: 25px 0;
+  padding:0;
   clear: both;
 }
 .schoolweekwidget
 {
     margin: 0;
+}
+.timetable{
+  padding:0;
 }
