@@ -1,0 +1,40 @@
+<div ng-repeat='schoolday in lessons.lessons' class='schooldaywidget' on-render-finished=''>
+    <div class='col-lg-3 col-md-5 col-sm-8 col-xs-12 schooldayobject'>
+        <div class='container-fluid schoolday'>
+            <div class='dateheader'>
+                <h3 ng-bind='schoolday.finnishdate' class='schoolday'></h3>
+            </div>
+            <div class='headers col-lg-3 col-xs-3'>
+                <div class='tthour' ng-repeat='hour in lessons.hours'>
+                    <h2 class='row_start_time'> {{hour}} </h2>
+                </div>
+            </div>
+            <div class='lessonsarea col-lg-9 col-xs-9' ng-style='{height:  {{lessons.lessonsareaheight}} }'>
+                <div class='lessonsdiv' ng-repeat='lesson in schoolday.lessons' ng-style='{top:  {{lesson.top}} , height:  {{lesson.height}} }'>
+                    <div class='start_time_block'>
+                        <p class='start_time'>
+                            {{lesson.start_time}}
+                        </p>
+                    </div>
+                    <div class='content_block'>
+                        <p>
+                            {{lesson.title}}
+                        </p>
+                        <p>
+                           {{lesson.course}}
+                        </p>
+                        <p>
+                          {{lesson.lecturer}}
+                        </p>
+                    </div>
+                    <div class='end_time_block'>
+                        <p class='end_time'>
+                             {{lesson.end_time}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class='col-lg-10 col-md-7 col-sm-4'></div> -->
+</div>
