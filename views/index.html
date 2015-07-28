@@ -34,6 +34,10 @@
                         </br>
                         <label for='sampledata'>Use sample data</label>
                         <input type='checkbox' ng-model='use_sample_data'/>
+                      </br>
+                        <label>View:</label>
+                        <button type="button" class="btn" ng-class="{'btn-primary': lessons.isDayView}" ng-click="lessons.changeView()">Day</button>
+                        <button type="button" class="btn" ng-class="{'btn-primary': lessons.isWeekView}" ng-click="lessons.changeView()">Week</button>
                     </div>
                 </form>
             </div>
@@ -41,6 +45,6 @@
     </div>
 </div>
 <div class='timetable container-fluid'>
-  <school-days view='day'></school-days>
+  <school-days view='week'></school-days>
 </div>
 {% endblock %}

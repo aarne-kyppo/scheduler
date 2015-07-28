@@ -28,9 +28,13 @@ router.get('/lessons/json/sampledata/:date?',function(req,res,next){
 
     for(var i=0;i<=6;i++)
     {
+        var currentdate = moment(monday).add(i,'days');
+        var weekday = currentdate.format('ddd');
+
         var dateheader = {
-            date: moment(monday).add(i,'days').format('YYYY-MM-DD'),
-            finnishdate: moment(monday).add(i,'days').format('L'),
+            date: currentdate.format('YYYY-MM-DD'),
+            finnishdate: currentdate.format('L'),
+            weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
             lessons: []
         };
         lessonsarray.push(dateheader);
@@ -66,9 +70,12 @@ router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
 
     for(var i=0;i<=6;i++)
     {
+        var currentdate = moment(monday).add(i,'days');
+        var weekday = currentdate.format('ddd');
         var dateheader = {
-            date: moment(monday).add(i,'days').format('YYYY-MM-DD'),
-            finnishdate: moment(monday).add(i,'days').format('L'),
+            date: currentdate.format('YYYY-MM-DD'),
+            finnishdate: currentdate.format('L'),
+            weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
             lessons: []
         };
         lessonsarray.push(dateheader);

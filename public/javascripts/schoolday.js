@@ -54,21 +54,15 @@ app.directive('groups',function($compile){
   };
 });
 app.directive('schoolDays',function($compile){
-  var rootURL = rooturl + '/angular-templates/';
-  var templates = {
-    week: rootURL + 'weekview.html',
-    day: rootURL + 'dayview.html'
-  }
   return {
-    templateUrl: function(elem,attr){
-      return templates[attr.view];
-    },
+    template: "<ng-include src='getTemplate()'></ng-include>",
+
     controller: function($scope)
     {
       $(window).scroll(function() {
          if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
            console.log($scope.lessons.lessons.length);
-           if(!$scope.fetching_lessons_unfinished)
+           if(!$scope.fetching_lessons_unfinished && $scope.lessons.lessons.length > 0)
            {
                $scope.lessons.getLessons($scope.selectedgroup,moment($scope.lessons.lessons[$scope.lessons.lessons.length-1].date).add(2,'days').format('YYYY-MM-DD'));
            }
@@ -86,8 +80,11 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
   this.selectedgroup = '';
   this.rowheight = 150;
   this.minuteheight = this.rowheight/60.0;
-  this.lessonsareaheight = this.hours.length * this.rowheight;
+  this.lessonsareaheight = this.hours.length * this.rowheight - $('.dateheader').height();
   this.fetching_lessons_unfinished = true; //To prevent fetching same week many times.
+  var that = this;
+  that.isWeekView = false;
+  that.isDayView = true;
   $scope.use_sample_data = false;
 
   $scope.$watch('use_sample_data',function(){
@@ -98,6 +95,33 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
       scope.getLessons();
     }
   });
+  this.changeView = function(){
+      if(that.isWeekView){
+        that.isDayView = true;
+        that.isWeekView = false;
+      }
+      else{
+        that.isDayView = false;
+        that.isWeekView = true;
+      }
+  }
+
+  $scope.isNewWeek = function(index){
+    return (parseInt(index) % 7) == 0;
+  }
+
+  $scope.getTemplate = function(){
+    var rootURL = rooturl + '/angular-templates/';
+    var templates = {
+      week: rootURL + 'weekview.html',
+      day: rootURL + 'dayview.html'
+    }
+    if(that.isDayView)
+    {
+      return templates.day;
+    }
+    return templates.week;
+  }
 
   this.getLessons = function(group,selected_date){
       scope.fetching_lessons_unfinished = true;
@@ -116,7 +140,7 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
       $http.get(url).success(function (data,status,headers,config){
           if(status === 200)
           {
-              console.log("scope");
+              //Generating y-position and height of lessons regarding starting- and endingtime.
               for(var i=0;i<data.length;i++)
               {
                   for(var j=0;j<data[i].lessons.length;j++)
@@ -128,7 +152,7 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
 
                       data[i].lessons[j].top = y0;
                       data[i].lessons[j].height = y1-y0;
-                      if(data[i].lessons[j].lecturer instanceof Array){
+                      if(data[i].lessons[j].lecturer instanceof Array){//For many lecturers.
                         data[i].lessons[j].lecturer = data[i].lessons[j].lecturer.join(",");
                       }
                   }

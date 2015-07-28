@@ -6,6 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+.headers{
+}
 .tthour
 {
     background-color: dodgerblue;
@@ -31,6 +33,12 @@ a {
     height: 100%;
     background-color: #eee;
     position:relative;
+}
+.weekview .lessonsarea{
+  border-right: 1px dashed gray;
+}
+.lastweekday{
+  border-right-width: 0px;
 }
 .lessonsdiv
 {
@@ -81,7 +89,7 @@ a {
   padding-right:0;
 }
 .weekwrapper{
-  width: 14.28%;
+  width: 13.00%;
   float:left;
 }
 .dateheader{
@@ -106,4 +114,11 @@ a {
 }
 .timetable{
   padding:0;
+}
+//This will be replaced with reasonable solution.
+.marginelement{
+  height: 20px;
+  width: 100%;
+  background-color: white;
+  clear: both;
 }
