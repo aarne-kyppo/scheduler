@@ -61,10 +61,10 @@ app.directive('schoolDays',function($compile){
     {
       $(window).scroll(function() {
          if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
-           console.log($scope.lessons.lessons.length);
+           console.log($scope.fetching_lessons_unfinished);
            if(!$scope.fetching_lessons_unfinished && $scope.lessons.lessons.length > 0)
            {
-               $scope.lessons.getLessons($scope.selectedgroup,moment($scope.lessons.lessons[$scope.lessons.lessons.length-1].date).add(2,'days').format('YYYY-MM-DD'));
+               $scope.getLessons($scope.selectedgroup,moment($scope.lessons.lessons[$scope.lessons.lessons.length-1].date).add(2,'days').format('YYYY-MM-DD'));
            }
          }
       });
@@ -81,10 +81,10 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
   this.rowheight = 150;
   this.minuteheight = this.rowheight/60.0;
   this.lessonsareaheight = this.hours.length * this.rowheight - $('.dateheader').height();
-  this.fetching_lessons_unfinished = true; //To prevent fetching same week many times.
-  var that = this;
-  that.isWeekView = false;
-  that.isDayView = true;
+  $scope.fetching_lessons_unfinished = false; //To prevent fetching same week many times.
+
+  scope.isWeekView = false;
+  scope.isDayView = true;
   $scope.use_sample_data = false;
 
   $scope.$watch('use_sample_data',function(){
@@ -92,17 +92,17 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
     {
       scope.lessons = [];
       scope.lessons.length = 0;
-      scope.getLessons();
+      $scope.getLessons();
     }
   });
   this.changeView = function(){
-      if(that.isWeekView){
-        that.isDayView = true;
-        that.isWeekView = false;
+      if(scope.isWeekView){
+        scope.isDayView = true;
+        scope.isWeekView = false;
       }
       else{
-        that.isDayView = false;
-        that.isWeekView = true;
+        scope.isDayView = false;
+        scope.isWeekView = true;
       }
   }
 
@@ -116,15 +116,16 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
       week: rootURL + 'weekview.html',
       day: rootURL + 'dayview.html'
     }
-    if(that.isDayView)
+    if(scope.isDayView)
     {
       return templates.day;
     }
     return templates.week;
   }
 
-  this.getLessons = function(group,selected_date){
-      scope.fetching_lessons_unfinished = true;
+  $scope.getLessons = function(group,selected_date){
+      $scope.fetching_lessons_unfinished = true;
+      console.log("asoijdaiosjdasioj");
       var url = "";
       if($scope.use_sample_data)
       {
@@ -160,7 +161,7 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
               $.merge(scope.lessons,data);
               console.log(scope.lessons[0].lessons[0]);
           }
-          scope.fetching_lessons_unfinished = false;
+          $scope.fetching_lessons_unfinished = false;
       });
   };
 });
