@@ -60,12 +60,10 @@ router.get('/lessons/json/sampledata/:date?',function(req,res,next){
     res.json(lessonsarray);
 });
 router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
-    console.log(req.params.group);
+
     start_date = moment(req.params.date) || moment(); //If date not provided, current date is used. Date is provided when user wants to see lessons from another week
-    console.log('start_date = ' + start_date.format('L'));
     var monday = moment(start_date).subtract(start_date.day()-1,'days'); //In this application week starts from monday.
     var nextmonday = moment(monday).add(1,'w');
-    console.log('monday = ' + monday.format('L') + ' next monday = ' + nextmonday.format('L'));
     var lessonsarray = []; //To decrease calculations in frontend. Filled inside mongodb query callback.
 
     for(var i=0;i<=6;i++)
@@ -76,6 +74,7 @@ router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
             date: currentdate.format('YYYY-MM-DD'),
             finnishdate: currentdate.format('L'),
             weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
+            weeknumber: currentdate.format('W'),
             lessons: []
         };
         lessonsarray.push(dateheader);

@@ -1,0 +1,98 @@
+$hour_block_bgcolor: dodgerblue
+$date_header_bgcolor: cadetblue
+$date_header_color: white
+$lesson_timeblock_bgcolor: #444
+$lesson_timeblock_color: white
+$lesson_content_bgcolor: #FF9233
+$lessonsarea_bgcolor: #eee
+$weekview_border_style: 1px dashed gray
+$hour_block_border_style: 1px solid black
+
+body
+  padding: 50px
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif
+
+  a
+    color: #00B7FF
+
+  .headers,.lessonsarea
+    padding: 0
+
+  .timetable
+    padding: 0
+
+    h3
+      margin: 0
+
+    .schooldayobject
+      margin: 25px 0
+      padding: 0
+      clear: both
+
+    .headers
+      .tthour
+        min-height: 150px
+        padding-left: 10px
+        padding-top: 10px
+        border-bottom: $hour_block_border_style
+        background-color: $hour_block_bgcolor
+
+        .row_start_time
+          margin: auto
+          color: white
+
+    .weekwrapper
+      width: 13.00%
+      float: left
+      padding-left: 0
+      padding-right: 0
+
+      .lessonsarea
+        border-right: $weekview_border_style
+
+    .daywrapper
+      padding-left: 0
+      padding-right: 0
+
+    .lessonsarea
+      height: 100%
+      background-color: $lessonsarea_bgcolor
+      position: relative
+
+      .lessonsdiv
+        position: absolute
+        width: 100%
+        background-color: $lesson_content_bgcolor
+
+        .start_time_block,
+        .end_time_block
+          background-color: $lesson_timeblock_bgcolor
+          color: $lesson_timeblock_color
+
+        .start_time,.end_time
+          margin-left: auto
+          margin-right: auto
+          max-width: 300px
+          text-align: center
+
+        .end_time_block
+          position: absolute
+          bottom: 0
+          width: 100%
+
+          .end_time
+            margin-bottom: 0
+
+        .content_block
+          padding-left: 10px
+
+          p
+            color: #111
+
+  .dateheader
+    margin-bottom: 0
+    text-align: center
+
+    h3
+      background-color: $date_header_bgcolor
+      color: $date_header_color
