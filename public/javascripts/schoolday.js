@@ -35,7 +35,7 @@ app.directive('groups',function($compile){
         $scope.lessons.lessons = [];
         console.log('groups:groupselected');
         $scope.use_sample_data = false;
-        $scope.lessons.getLessons($scope.lessons.selectedgroup,null);
+        $scope.getLessons($scope.lessons.selectedgroup,null);
       };
 
       this.initialize = function(){
