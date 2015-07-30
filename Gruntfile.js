@@ -22,8 +22,23 @@ module.exports = function(grunt){
           },
         ],
       }
+    },
+    sass: {
+      dist: {
+        options: {
+          sourcemap: 'none',
+        },
+        files: [{
+          expand: true,
+          cwd: 'public/stylesheets/',
+          src: ['*.sass',],
+          dest: 'public/stylesheets/',
+          ext: '.css',
+        },]
+      }
     }
   });
   grunt.loadNpmTasks('grunt-contrib-compress');
-  grunt.registerTask('default',['compress',]);
+  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.registerTask('default',['compress','sass']);
 }

@@ -1,8 +1,5 @@
 <div class="weekview">
-  <div ng-repeat='schoolday in lessons.lessons' class='schoolweekwidget' on-render-finished=''>
-    <!-- Will be replaced with reasonable solution(I'm sorry) -->
-    <div class='marginelement' ng-show="isNewWeek($index)" ng-style='{height: 20}'>
-    </div>
+  <div ng-repeat='schoolday in lessons.lessons' on-render-finished=''>
 
     <div class='headers col-lg-1 col-md-1' ng-show="isNewWeek($index)">
       <div class='dateheader'>
@@ -12,37 +9,35 @@
           <h2 class='row_start_time'> {{hour}} </h2>
       </div>
     </div>
-      <div class='schooldaywrapper weekwrapper'>
-          <div class='container-fluid schoolday'>
-              <div class='dateheader'>
-                  <h3 ng-bind='schoolday.finnishdate' class='schoolday'></h3>
-              </div>
-              <div class='lessonsarea' ng-style="{height:  {{lessons.lessonsareaheight}} }">
-                  <div class='lessonsdiv' ng-repeat='lesson in schoolday.lessons' ng-style='{top:  {{lesson.top}} , height:  {{lesson.height}} }'>
-                      <div class='start_time_block'>
-                          <p class='start_time'>
-                              {{lesson.start_time}}
-                          </p>
-                      </div>
-                      <div class='content_block'>
-                          <p>
-                              {{lesson.title}}
-                          </p>
-                          <p>
-                             {{lesson.course}}
-                          </p>
-                          <p>
-                            {{lesson.lecturer}}
-                          </p>
-                      </div>
-                      <div class='end_time_block'>
-                          <p class='end_time'>
-                               {{lesson.end_time}}
-                          </p>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
+    <div class='weekwrapper'>
+        <div class='dateheader'>
+            <h3 ng-bind='schoolday.finnishdate'></h3>
+        </div>
+        <div class='lessonsarea' ng-style="{height:  {{lessons.lessonsareaheight}} }">
+            <div class='lessonsdiv' ng-repeat='lesson in schoolday.lessons' ng-style='{top:  {{lesson.top}} , height:  {{lesson.height}} }'>
+                <div class='start_time_block'>
+                    <p class='start_time'>
+                        {{lesson.start_time}}
+                    </p>
+                </div>
+                <div class='content_block'>
+                    <p>
+                        {{lesson.title}}
+                    </p>
+                    <p>
+                       {{lesson.course}}
+                    </p>
+                    <p>
+                      {{lesson.lecturer}}
+                    </p>
+                </div>
+                <div class='end_time_block'>
+                    <p class='end_time'>
+                         {{lesson.end_time}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
 </div>
