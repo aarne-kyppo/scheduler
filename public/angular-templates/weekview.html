@@ -11,7 +11,7 @@
     </div>
     <div class='weekwrapper'>
         <div class='dateheader'>
-            <h3 ng-bind='schoolday.finnishdate'></h3>
+            <h3>{{schoolday.weekday}} {{schoolday.finnishdate}}</h3>
         </div>
         <div class='lessonsarea' ng-style="{height:  {{lessons.lessonsareaheight}} }">
             <div class='lessonsdiv' ng-repeat='lesson in schoolday.lessons' ng-style='{top:  {{lesson.top}} , height:  {{lesson.height}} }'>

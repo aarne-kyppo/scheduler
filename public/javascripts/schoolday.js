@@ -61,10 +61,9 @@ app.directive('schoolDays',function($compile){
     {
       $(window).scroll(function() {
          if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
-           console.log($scope.fetching_lessons_unfinished);
            if(!$scope.fetching_lessons_unfinished && $scope.lessons.lessons.length > 0)
            {
-               $scope.getLessons($scope.selectedgroup,moment($scope.lessons.lessons[$scope.lessons.lessons.length-1].date).add(2,'days').format('YYYY-MM-DD'));
+               $scope.getLessons($scope.selectedgroup,moment(_.last($scope.lessons.lessons).date).add(2,'days').format('YYYY-MM-DD'));
            }
          }
       });
@@ -159,7 +158,6 @@ app.controller('LessonsController',function($scope,$http){ //This controller wil
                   }
               }
               $.merge(scope.lessons,data);
-              console.log(scope.lessons[0].lessons[0]);
           }
           $scope.fetching_lessons_unfinished = false;
       });

@@ -2,7 +2,7 @@
     <div class='col-lg-3 col-md-5 col-sm-8 col-xs-12 schooldayobject'>
         <div class='container-fluid daywrapper'>
             <div class='dateheader'>
-                <h3 ng-bind='schoolday.finnishdate'></h3>
+              <h3>{{schoolday.weekday}} {{schoolday.finnishdate}}</h3>
             </div>
             <div class='headers col-lg-3 col-xs-3'>
                 <div class='tthour' ng-repeat='hour in lessons.hours'>

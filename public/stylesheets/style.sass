@@ -7,6 +7,8 @@ $lesson_content_bgcolor: #FF9233
 $lessonsarea_bgcolor: #eee
 $weekview_border_style: 1px dashed gray
 $hour_block_border_style: 1px solid black
+$hour_block_border_right_style: 1px solid black
+$weekwrapper_width: 13.00%
 
 body
   padding: 50px
@@ -35,6 +37,7 @@ body
         padding-left: 10px
         padding-top: 10px
         border-bottom: $hour_block_border_style
+        border-right: $hour_block_border_right_style
         background-color: $hour_block_bgcolor
 
         .row_start_time
@@ -42,13 +45,14 @@ body
           color: white
 
     .weekwrapper
-      width: 13.00%
+      width: $weekwrapper_width
       float: left
       padding-left: 0
       padding-right: 0
 
       .lessonsarea
         border-right: $weekview_border_style
+        border-bottom: $weekview_border_style
 
     .daywrapper
       padding-left: 0
@@ -58,6 +62,7 @@ body
       height: 100%
       background-color: $lessonsarea_bgcolor
       position: relative
+      margin-bottom: 40px
 
       .lessonsdiv
         position: absolute

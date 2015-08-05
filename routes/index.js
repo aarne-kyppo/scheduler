@@ -33,7 +33,7 @@ router.get('/lessons/json/sampledata/:date?',function(req,res,next){
 
         var dateheader = {
             date: currentdate.format('YYYY-MM-DD'),
-            finnishdate: currentdate.format('L'),
+            finnishdate: currentdate.format('D.M'),
             weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
             lessons: []
         };
