@@ -37,7 +37,7 @@ app.directive('groups',function($compile){
 
       $scope.groupselected = function(){ //Triggers getLessons-function of LessonsController.
         $scope.lessons.lessons = [];
-        $scope.lessons.use_sample_data = false;
+        $scope.use_sample_data = false;
         $scope.groupNotFound = false;
         $scope.getLessons($scope.selectedgroup.name,null);
       };
@@ -66,12 +66,17 @@ app.directive('groups',function($compile){
                 }
               });
               //If there is no requested group, make notification for user.
-              if(!$scope.selectedgroup || $.type($scope.selectedgroup) === 'string')
+              console.log($scope.selectedgroup.name);
+              if($scope.selectedgroup)
               {
-                $scope.groupNotFound = true;
-              }
-              else if($.type($scope.selectedgroup) === 'object' && $scope.selectedgroup.name){
-                $scope.getLessons($scope.selectedgroup.name,null);
+                if($scope.selectedgroup.name === undefined)
+                {
+                  $scope.groupNotFound = true;
+                }
+                else{
+                  console.log("lalalalala");
+                  $scope.getLessons($scope.selectedgroup.name,null);
+                }
               }
             }
         });
@@ -122,6 +127,13 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
       scope.lessons = [];
       scope.lessons.length = 0;
       $scope.getLessons();
+    }
+    else{
+      scope.lessons = [];
+      scope.lessons.length = 0;
+      if($scope.selectedgroup.name){
+        $scope.getLessons($scope.selectedgroup.name,null);
+      }
     }
   });
 
