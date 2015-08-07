@@ -72,7 +72,7 @@ router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
         var weekday = currentdate.format('ddd');
         var dateheader = {
             date: currentdate.format('YYYY-MM-DD'),
-            finnishdate: currentdate.format('L'),
+            finnishdate: currentdate.format('D.M'),
             weekday: weekday.charAt(0).toUpperCase() + weekday.slice(1),
             weeknumber: currentdate.format('W'),
             lessons: []

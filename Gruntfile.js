@@ -23,6 +23,9 @@ module.exports = function(grunt){
         ],
       }
     },
+    jshint: {
+      all: ['public/**/*.js',],
+    },
     sass: {
       dist: {
         options: {
@@ -40,5 +43,6 @@ module.exports = function(grunt){
   });
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-contrib-sass');
-  grunt.registerTask('default',['compress','sass']);
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.registerTask('default',['jshint','sass','compress']);
 }

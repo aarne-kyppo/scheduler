@@ -3,6 +3,9 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
   body a {
     color: #00B7FF; }
+  body #optionsbody .alertspan {
+    padding: 1px 15px;
+    margin-left: 15px; }
   body .headers, body .lessonsarea {
     padding: 0; }
   body .timetable {

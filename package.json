@@ -19,7 +19,8 @@
     "JSONStream": "~0.10.0",
     "underscore": "~1.8.2",
     "swig": "~1.4.2",
-    "moment": "~2.10.3"
+    "moment": "~2.10.3",
+    "grunt-contrib-jshint": "~0.11.2"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
