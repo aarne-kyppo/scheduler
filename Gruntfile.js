@@ -24,7 +24,8 @@ module.exports = function(grunt){
       }
     },
     jshint: {
-      all: ['public/**/*.js',],
+      all: ['public/**/*.js',
+            'routes/index.js'],
     },
     sass: {
       dist: {

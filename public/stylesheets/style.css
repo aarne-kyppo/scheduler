@@ -55,6 +55,12 @@ body {
           margin-right: auto;
           max-width: 300px;
           text-align: center; }
+          body .timetable .lessonsarea .lessonsdiv .start_time .nextlink, body .timetable .lessonsarea .lessonsdiv .end_time .nextlink {
+            position: absolute;
+            right: 3px; }
+          body .timetable .lessonsarea .lessonsdiv .start_time .prevlink, body .timetable .lessonsarea .lessonsdiv .end_time .prevlink {
+            position: absolute;
+            left: 3px; }
         body .timetable .lessonsarea .lessonsdiv .end_time_block {
           position: absolute;
           bottom: 0;

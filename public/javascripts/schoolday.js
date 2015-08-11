@@ -66,7 +66,6 @@ app.directive('groups',function($compile){
                 }
               });
               //If there is no requested group, make notification for user.
-              console.log($scope.selectedgroup.name);
               if($scope.selectedgroup)
               {
                 if($scope.selectedgroup.name === undefined)
@@ -74,7 +73,6 @@ app.directive('groups',function($compile){
                   $scope.groupNotFound = true;
                 }
                 else{
-                  console.log("lalalalala");
                   $scope.getLessons($scope.selectedgroup.name,null);
                 }
               }
@@ -96,8 +94,12 @@ app.directive('schoolDays',function($compile){
          if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
            if(!$scope.fetching_lessons_unfinished && $scope.lessons.lessons.length > 0)
            {
-             console.log('jotain');
-             $scope.getLessons($scope.selectedgroup.name,moment(_.last($scope.lessons.lessons).date).add(2,'days').format('YYYY-MM-DD'));
+             var group = null;
+             if($scope.selectedgroup)
+             {
+               group = $scope.selectedgroup.name | null;
+             }
+             $scope.getLessons(group,moment(_.last($scope.lessons.lessons).date).add(2,'days').format('YYYY-MM-DD'));
            }
          }
       });
@@ -109,7 +111,6 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
   this.hours = [8,9,10,11,12,13,14,15,16,17,18,19,20];
   scope.lessons = [];
   scope.groups = [];
-  scope.selectedgrp = '504T12';
   scope.groupNotFound = false;
 
   this.rowheight = 150;
@@ -120,6 +121,7 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
   scope.isWeekView = false;
   scope.isDayView = true;
   $scope.use_sample_data = false;
+  $scope.lessonindex = 1;//for overlapping lessons.
 
   $scope.$watch('use_sample_data',function(){
     if($scope.use_sample_data)
@@ -131,11 +133,56 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
     else{
       scope.lessons = [];
       scope.lessons.length = 0;
-      if($scope.selectedgroup.name){
+      if($scope.selectedgroup && $scope.selectedgroup.name){
         $scope.getLessons($scope.selectedgroup.name,null);
       }
     }
   });
+
+  $scope.doLessonsIntersect = function(lessona, lessonb){
+    var a = Array.isArray(lessona) ? lessona[0] : lessona;
+    var b = Array.isArray(lessonb) ? lessonb[0] : lessonb;
+    if(a.top < b.top && (a.top+a.height) > b.top)
+    {
+      return true;
+    }
+    if(a.top < (b.top+b.height) && (a.top+a.height) > (b.top+b.height))
+    {
+      return true;
+    }
+    if(a.top < b.top && (a.top+a.height) > (b.top+b.height))
+    {
+      return true;
+    }
+    if(b.top < a.top && (b.top+b.height) > (a.top+a.height))
+    {
+      return true;
+    }
+    return false;
+  };
+
+  $scope.getLesson = function(lessonarr){//For overlapping lessons only.
+    return lessonarr.intersectinglessons[lessonarr.selectedindex];
+  };
+  $scope.getNextLesson = function(lessonarr){
+    lessonarr.selectedindex++;
+    if(lessonarr.selectedindex >= (lessonarr.intersectinglessons.length))
+    {
+      lessonarr.selectedindex = 0;
+      return lessonarr.intersectinglessons[0];
+    }
+    return lessonarr.intersectinglessons[lessonarr.selectedindex];
+  };
+  $scope.getPrevLesson = function(lessonarr){
+    lessonarr.selectedindex--;
+    if(lessonarr.selectedindex < 0)
+    {
+      lessonarr.selectedindex = lessonarr.intersectinglessons.length-1;
+      return _.last(lessonarr.intersectinglessons);
+    }
+    return lessonarr.intersectinglessons[lessonarr.selectedindex];
+  };
+
 
   this.changeView = function(){
       if(scope.isWeekView){
@@ -183,23 +230,43 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
       $http.get(url).success(function (data,status,headers,config){
           if(status === 200)
           {
+            var modified_data = [];
               //Generating y-position and height of lessons regarding starting- and endingtime.
               for(var i=0;i<data.length;i++)
               {
                   for(var j=0;j<data[i].lessons.length;j++)
                   {
-                      var start = data[i].lessons[j].start_time.split(":");
-                      var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
-                      var end = data[i].lessons[j].end_time.split(":");
-                      var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
+                      var lesson = data[i].lessons[j];
+                      if(lesson.intersectinglessons)
+                      {
+                        lesson.intersectinglessons.forEach(function(l){
+                          var start = l.start_time.split(":");
+                          var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
+                          var end = l.end_time.split(":");
+                          var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
 
-                      data[i].lessons[j].top = y0;
-                      data[i].lessons[j].height = y1-y0;
-                      if(data[i].lessons[j].lecturer instanceof Array){//For many lecturers.
-                        data[i].lessons[j].lecturer = data[i].lessons[j].lecturer.join(",");
+                          l.top = y0;
+                          l.height = y1-y0;
+                          if(l.lecturer instanceof Array){//For many lecturers.
+                            l.lecturer = l.lecturer.join(",");
+                          }
+                        });
+                      }
+                      else{
+                        var start = lesson.start_time.split(":");
+                        var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
+                        var end = lesson.end_time.split(":");
+                        var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
+
+                        lesson.top = y0;
+                        lesson.height = y1-y0;
+                        if(lesson.lecturer instanceof Array){//For many lecturers.
+                          lesson.lecturer = lesson.lecturer.join(",");
+                        }
                       }
                   }
               }
+              console.log(data);
               $.merge(scope.lessons,data);
           }
           $scope.fetching_lessons_unfinished = false;

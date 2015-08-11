@@ -14,7 +14,8 @@
             <h3>{{schoolday.weekday}} {{schoolday.finnishdate}}</h3>
         </div>
         <div class='lessonsarea' ng-style="{height:  {{lessons.lessonsareaheight}} }">
-            <div class='lessonsdiv' ng-repeat='lesson in schoolday.lessons' ng-style='{top:  {{lesson.top}} , height:  {{lesson.height}} }'>
+            <div ng-repeat='lesson in schoolday.lessons'>
+              <div class='lessonsdiv' ng-if='lesson.start_time' ng-style='{top:  lesson.top , height:  lesson.height }'>
                 <div class='start_time_block'>
                     <p class='start_time'>
                         {{lesson.start_time}}
@@ -36,6 +37,34 @@
                          {{lesson.end_time}}
                     </p>
                 </div>
+              </div>
+              <div class='lessonsdiv' ng-if='lesson.intersectinglessons' ng-style='{top:  getLesson(lesson).top , height:  getLesson(lesson).height }'>
+                <div class='start_time_block'>
+                    <p class='start_time'>
+                      <span class="prevlink glyphicon glyphicon-menu-left" ng-click="getPrevLesson(lesson)"></span>
+                        {{getLesson(lesson).start_time}}
+                      <span class="nextlink glyphicon glyphicon-menu-right" ng-click="getNextLesson(lesson)"></span>
+                    </p>
+                </div>
+                <div class='content_block'>
+                    <p>
+                        {{getLesson(lesson).title}}
+                    </p>
+                    <p>
+                       {{getLesson(lesson).course}}
+                    </p>
+                    <p>
+                      {{getLesson(lesson).lecturer}}
+                    </p>
+                </div>
+                <div class='end_time_block'>
+                    <p class='end_time'>
+                      <span class="prevlink glyphicon glyphicon-menu-left" ng-click="getPrevLesson(lesson)"></span>
+                         {{getLesson(lesson).end_time}}
+                      <span class="nextlink glyphicon glyphicon-menu-right" ng-click="getNextLesson(lesson)"></span>
+                    </p>
+                </div>
+              </div>
             </div>
         </div>
     </div>
