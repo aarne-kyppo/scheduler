@@ -19,7 +19,7 @@ module.exports = function(filepath, headers,dbname,collections,test)
     var date_regexp = /\d{4}[-]\d{2}[-]\d{2}/g;
     var parser = new Transform({objectMode: true});
     parser._transform = function(data, encoding, done) {
-        if(date_regexp.test(data[0]))
+        if(date_regexp.test(data[0]))//Ensuring that headers will not be placed into database
         {
             for(var i=0;i<data.length;i++)
             {
@@ -43,11 +43,11 @@ module.exports = function(filepath, headers,dbname,collections,test)
             done();
         }
     };
-    
+
     var stream = file
     .pipe(csvToJson)
     .pipe(parser);
-    
+
     stream.on('finish',function(){
         if(test)
         {

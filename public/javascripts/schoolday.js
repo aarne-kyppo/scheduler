@@ -107,64 +107,42 @@ app.directive('schoolDays',function($compile){
   };
 });
 app.controller('LessonsController',function($scope,$http,$location){ //This controller will be replaced by directive.
-  var scope = this;
+  var that = this;
   this.hours = [8,9,10,11,12,13,14,15,16,17,18,19,20];
-  scope.lessons = [];
-  scope.groups = [];
-  scope.groupNotFound = false;
+  that.lessons = [];
+  that.groups = [];
+  that.groupNotFound = false;
 
   this.rowheight = 150;
   this.minuteheight = this.rowheight/60.0;
   this.lessonsareaheight = this.hours.length * this.rowheight - $('.dateheader').height();
   $scope.fetching_lessons_unfinished = false; //To prevent fetching same week many times.
 
-  scope.isWeekView = false;
-  scope.isDayView = true;
+  that.isWeekView = false;
+  that.isDayView = true;
   $scope.use_sample_data = false;
   $scope.lessonindex = 1;//for overlapping lessons.
 
   $scope.$watch('use_sample_data',function(){
     if($scope.use_sample_data)
     {
-      scope.lessons = [];
-      scope.lessons.length = 0;
+      that.lessons = [];
+      that.lessons.length = 0;
       $scope.getLessons();
     }
     else{
-      scope.lessons = [];
-      scope.lessons.length = 0;
+      that.lessons = [];
+      that.lessons.length = 0;
       if($scope.selectedgroup && $scope.selectedgroup.name){
         $scope.getLessons($scope.selectedgroup.name,null);
       }
     }
   });
 
-  $scope.doLessonsIntersect = function(lessona, lessonb){
-    var a = Array.isArray(lessona) ? lessona[0] : lessona;
-    var b = Array.isArray(lessonb) ? lessonb[0] : lessonb;
-    if(a.top < b.top && (a.top+a.height) > b.top)
-    {
-      return true;
-    }
-    if(a.top < (b.top+b.height) && (a.top+a.height) > (b.top+b.height))
-    {
-      return true;
-    }
-    if(a.top < b.top && (a.top+a.height) > (b.top+b.height))
-    {
-      return true;
-    }
-    if(b.top < a.top && (b.top+b.height) > (a.top+a.height))
-    {
-      return true;
-    }
-    return false;
-  };
-
   $scope.getLesson = function(lessonarr){//For overlapping lessons only.
     return lessonarr.intersectinglessons[lessonarr.selectedindex];
   };
-  $scope.getNextLesson = function(lessonarr){
+  $scope.getNextLesson = function(lessonarr){//Navigation function for overlapping lessons.
     lessonarr.selectedindex++;
     if(lessonarr.selectedindex >= (lessonarr.intersectinglessons.length))
     {
@@ -173,7 +151,7 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
     }
     return lessonarr.intersectinglessons[lessonarr.selectedindex];
   };
-  $scope.getPrevLesson = function(lessonarr){
+  $scope.getPrevLesson = function(lessonarr){//Navigation function for overlapping lessons.
     lessonarr.selectedindex--;
     if(lessonarr.selectedindex < 0)
     {
@@ -185,13 +163,13 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
 
 
   this.changeView = function(){
-      if(scope.isWeekView){
-        scope.isDayView = true;
-        scope.isWeekView = false;
+      if(that.isWeekView){
+        that.isDayView = true;
+        that.isWeekView = false;
       }
       else{
-        scope.isDayView = false;
-        scope.isWeekView = true;
+        that.isDayView = false;
+        that.isWeekView = true;
       }
   };
 
@@ -205,11 +183,24 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
       week: rootURL + 'weekview.html',
       day: rootURL + 'dayview.html'
     };
-    if(scope.isDayView)
+    if(that.isDayView)
     {
       return templates.day;
     }
     return templates.week;
+  };
+
+  that.calculateDimensions = function(lesson){
+    var start = lesson.start_time.split(":");
+    var y0 = parseInt(start[1])*that.minuteheight+(parseInt(start[0])-that.hours[0])*that.rowheight;
+    var end = lesson.end_time.split(":");
+    var y1 = parseInt(end[1])*that.minuteheight + (parseInt(end[0])-that.hours[0])*that.rowheight;
+
+    lesson.top = y0;
+    lesson.height = y1-y0;
+    if(lesson.lecturer instanceof Array){//For many lecturers.
+      lesson.lecturer = lesson.lecturer.join(",");
+    }
   };
 
   $scope.getLessons = function(group,selected_date){
@@ -232,42 +223,20 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
           {
             var modified_data = [];
               //Generating y-position and height of lessons regarding starting- and endingtime.
-              for(var i=0;i<data.length;i++)
-              {
-                  for(var j=0;j<data[i].lessons.length;j++)
-                  {
-                      var lesson = data[i].lessons[j];
-                      if(lesson.intersectinglessons)
+              data.forEach(function(schoolday){
+                  schoolday.lessons.forEach(function(lesson){
+                      if(lesson.intersectinglessons)//For intersecting lessons.
                       {
-                        lesson.intersectinglessons.forEach(function(l){
-                          var start = l.start_time.split(":");
-                          var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
-                          var end = l.end_time.split(":");
-                          var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
-
-                          l.top = y0;
-                          l.height = y1-y0;
-                          if(l.lecturer instanceof Array){//For many lecturers.
-                            l.lecturer = l.lecturer.join(",");
-                          }
+                        lesson.intersectinglessons.forEach(function(intersectinglesson){
+                          that.calculateDimensions(intersectinglesson);
                         });
                       }
                       else{
-                        var start = lesson.start_time.split(":");
-                        var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
-                        var end = lesson.end_time.split(":");
-                        var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
-
-                        lesson.top = y0;
-                        lesson.height = y1-y0;
-                        if(lesson.lecturer instanceof Array){//For many lecturers.
-                          lesson.lecturer = lesson.lecturer.join(",");
-                        }
+                        that.calculateDimensions(lesson);
                       }
-                  }
-              }
-              console.log(data);
-              $.merge(scope.lessons,data);
+                  });
+              });
+              $.merge(that.lessons,data);
           }
           $scope.fetching_lessons_unfinished = false;
       });

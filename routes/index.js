@@ -15,7 +15,7 @@ router.get('/lessons/group/:group', function(req, res, next) {
 router.post('/options/group/',function(req,res,next){
     res.redirect(req.app.locals.rooturl + '/lessons/group/' + req.body.group);
 });
-function prepareLessonsArray(date){
+function prepareLessonsArray(date,forSampledata){
   //If date not provided, current date is used. Date is provided when user wants to see lessons from another week
   start_date = moment(date) || moment();
   var monday = moment(start_date).subtract(start_date.day()-1,'days'); //In this application week starts from monday.
@@ -35,7 +35,16 @@ function prepareLessonsArray(date){
       };
       lessonsarray.push(dateheader);
   }
-  return lessonsarray;
+  if(forSampledata){
+    return lessonsarray;
+  }
+  else{ //Monday and nextmonday are needed in mongodb query
+    return {
+      lessonsarray: lessonsarray,
+      monday: monday,
+      nextmonday: nextmonday,
+    };
+  }
 }
 function doLessonsIntersect(lessona, lessonb){
   var a = Array.isArray(lessona) ? lessona[0] : lessona;
@@ -77,14 +86,11 @@ function joinIntersectingLessons(lessonsarray){
               lessona.intersectinglessons.push(overlappinglesson);
             }
             else{
-              console.log("lolololo");
               lessons[i] = {
-                selectedindex: 0,
+                selectedindex: 0,//Used to get selected lesson from intersectinglessons Array.
                 intersectinglessons: [lessona,overlappinglesson]
               };
             }
-            console.log("Found intersecting lessons");
-            console.log(schoolday.lessons);
           }
         }
       }
@@ -96,7 +102,7 @@ function joinIntersectingLessons(lessonsarray){
 For test data to show sample data on application.
 */
 router.get('/lessons/json/sampledata/:date?',function(req,res,next){
-    var lessonsarray = prepareLessonsArray(req.params.date);
+    var lessonsarray = prepareLessonsArray(req.params.date,true);
     console.log(lessonsarray);
 
     //Generating sample lessons
@@ -131,17 +137,26 @@ router.get('/lessons/json/sampledata/:date?',function(req,res,next){
 
     res.json(joinIntersectingLessons(lessonsarray));
 });
-router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
-  var lessonsarray = prepareLessonsArray(req.params.date);
 
-  mongo.lessons.find({start_date: { $gte: monday.format('YYYY-MM-DD'), $lt: nextmonday.format('YYYY-MM-DD') }, groups: req.params.group},function(err,lessons){
-      for(var i=0; i<lessons.length;i++){
-           var day_of_lesson = _.find(lessonsarray,function(obj){ return obj.date === lessons[i].start_date;});
+function findFilter(obj,lesson){
+  return obj.date === lesson.start_date;
+}
+
+router.get('/lessons/json/group/:group/:date*?',function(req,res,next){
+  var prepared_data = prepareLessonsArray(req.params.date,false);
+  var lessonsarray = prepared_data.lessonsarray;
+
+  mongo.lessons.find({start_date: { $gte: prepared_data.monday.format('YYYY-MM-DD'), $lt: prepared_data.nextmonday.format('YYYY-MM-DD') }, groups: req.params.group},function(err,lessons){
+      lessons.forEach(function(lesson){
+        console.log(lessonsarray);
+           var day_of_lesson = _.find(lessonsarray,findFilter(obj,lesson));
+           console.log(day_of_lesson);
            if(day_of_lesson)
            {
                day_of_lesson.lessons.push(lessons[i]);
            }
-      }
+           console.log(lessonsarray);
+      });
       lessonsarray = joinIntersectingLessons(lessonsarray);
       res.json(lessonsarray);
   });
