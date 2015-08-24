@@ -33,13 +33,13 @@ app.directive('groups',function($compile){
 
     controller: function($scope,$http)
     {
-      $scope.groupNotFound = false;
+      $scope.lessonsctrl.groupNotFound = false;
 
       $scope.groupselected = function(){ //Triggers getLessons-function of LessonsController.
-        $scope.lessons.lessons = [];
+        $scope.lessonsctrl.schooldays = [];
         $scope.use_sample_data = false;
-        $scope.groupNotFound = false;
-        $scope.getLessons($scope.selectedgroup.name,null);
+        $scope.lessonsctrl.groupNotFound = false;
+        $scope.lessonsctrl.getLessons($scope.selectedgroup.name,null);
       };
       this.initialize = function(){
         $http.get(rooturl + '/groups').success(function(data,status,headers,config){
@@ -55,10 +55,10 @@ app.directive('groups',function($compile){
                     name: group,
                   };
                   $scope.selectedgroup = selectedgroup;
-                  $scope.lessons.groups.push(selectedgroup);
+                  $scope.lessonsctrl.groups.push(selectedgroup);
                 }
                 else{
-                  $scope.lessons.groups.push({
+                  $scope.lessonsctrl.groups.push({
                     id: index,
                     name: group,
                   });
@@ -70,10 +70,10 @@ app.directive('groups',function($compile){
               {
                 if($scope.selectedgroup.name === undefined)
                 {
-                  $scope.groupNotFound = true;
+                  $scope.lessonsctrl.groupNotFound = true;
                 }
                 else{
-                  $scope.getLessons($scope.selectedgroup.name,null);
+                  $scope.lessonsctrl.getLessons($scope.selectedgroup.name,null);
                 }
               }
             }
@@ -84,22 +84,22 @@ app.directive('groups',function($compile){
     templateUrl: rooturl + '/angular-templates/groups.html',
   };
 });
-app.directive('schoolDays',function($compile){
+app.directive('schoolDays',function(){
   return {
-    template: "<ng-include src='getTemplate()'></ng-include>",
+    template: "<ng-include src='lessonsctrl.getTemplate()'></ng-include>",//Template is different in weekview than in dayview.
 
     controller: function($scope)
     {
       $(window).scroll(function() {
          if(($(window).scrollTop() + $(window).height()) > ($(document).height() - 100)) {
-           if(!$scope.fetching_lessons_unfinished && $scope.lessons.lessons.length > 0)
+           if(!$scope.lessonsctrl.fetching_lessons_unfinished && $scope.lessonsctrl.schooldays.length > 0)
            {
              var group = null;
              if($scope.selectedgroup)
              {
                group = $scope.selectedgroup.name | null;
              }
-             $scope.getLessons(group,moment(_.last($scope.lessons.lessons).date).add(2,'days').format('YYYY-MM-DD'));
+             $scope.lessonsctrl.getLessons(group,moment(_.last($scope.lessonsctrl.schooldays).date).add(2,'days').format('YYYY-MM-DD'));
            }
          }
       });
@@ -107,42 +107,44 @@ app.directive('schoolDays',function($compile){
   };
 });
 app.controller('LessonsController',function($scope,$http,$location){ //This controller will be replaced by directive.
-  var that = this;
-  this.hours = [8,9,10,11,12,13,14,15,16,17,18,19,20];
-  that.lessons = [];
-  that.groups = [];
-  that.groupNotFound = false;
+  var scope = this;
+  scope.hours = [8,9,10,11,12,13,14,15,16,17,18,19,20];
+  scope.schooldays = [];
+  scope.groups = [];
+  scope.groupNotFound = false;
 
-  this.rowheight = 150;
-  this.minuteheight = this.rowheight/60.0;
-  this.lessonsareaheight = this.hours.length * this.rowheight - $('.dateheader').height();
-  $scope.fetching_lessons_unfinished = false; //To prevent fetching same week many times.
+  scope.rowheight = 150;
+  scope.minuteheight = this.rowheight/60.0;
+  scope.lessonsareaheight = this.hours.length * this.rowheight - $('.dateheader').height();
+  scope.fetching_lessons_unfinished = false; //To prevent fetching same week many times.
 
-  that.isWeekView = false;
-  that.isDayView = true;
+  scope.isWeekView = false;
+  scope.isDayView = true;
   $scope.use_sample_data = false;
-  $scope.lessonindex = 1;//for overlapping lessons.
 
   $scope.$watch('use_sample_data',function(){
     if($scope.use_sample_data)
     {
-      that.lessons = [];
-      that.lessons.length = 0;
-      $scope.getLessons();
+      scope.schooldays = [];
+      scope.schooldays.length = 0;
+      scope.getLessons();
     }
     else{
-      that.lessons = [];
-      that.lessons.length = 0;
+      scope.schooldays = [];
+      scope.schooldays.length = 0;
       if($scope.selectedgroup && $scope.selectedgroup.name){
-        $scope.getLessons($scope.selectedgroup.name,null);
+        scope.getLessons($scope.selectedgroup.name,null);
       }
     }
   });
 
-  $scope.getLesson = function(lessonarr){//For overlapping lessons only.
+  /*
+  * Functions for insersecting lessons.
+  */
+  scope.getLesson = function(lessonarr){//For overlapping lessons only.
     return lessonarr.intersectinglessons[lessonarr.selectedindex];
   };
-  $scope.getNextLesson = function(lessonarr){//Navigation function for overlapping lessons.
+  scope.getNextLesson = function(lessonarr){//Navigation function for overlapping lessons.
     lessonarr.selectedindex++;
     if(lessonarr.selectedindex >= (lessonarr.intersectinglessons.length))
     {
@@ -151,7 +153,7 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
     }
     return lessonarr.intersectinglessons[lessonarr.selectedindex];
   };
-  $scope.getPrevLesson = function(lessonarr){//Navigation function for overlapping lessons.
+  scope.getPrevLesson = function(lessonarr){//Navigation function for overlapping lessons.
     lessonarr.selectedindex--;
     if(lessonarr.selectedindex < 0)
     {
@@ -162,39 +164,39 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
   };
 
 
-  this.changeView = function(){
-      if(that.isWeekView){
-        that.isDayView = true;
-        that.isWeekView = false;
+  scope.changeView = function(){
+      if(scope.isWeekView){
+        scope.isDayView = true;
+        scope.isWeekView = false;
       }
       else{
-        that.isDayView = false;
-        that.isWeekView = true;
+        scope.isDayView = false;
+        scope.isWeekView = true;
       }
   };
 
-  $scope.isNewWeek = function(index){
+  scope.isNewWeek = function(index){
     return (parseInt(index) % 7) === 0;
   };
 
-  $scope.getTemplate = function(){
+  scope.getTemplate = function(){
     var rootURL = rooturl + '/angular-templates/';
     var templates = {
       week: rootURL + 'weekview.html',
       day: rootURL + 'dayview.html'
     };
-    if(that.isDayView)
+    if(scope.isDayView)
     {
       return templates.day;
     }
     return templates.week;
   };
 
-  that.calculateDimensions = function(lesson){
+  scope.calculateDimensions = function(lesson){
     var start = lesson.start_time.split(":");
-    var y0 = parseInt(start[1])*that.minuteheight+(parseInt(start[0])-that.hours[0])*that.rowheight;
+    var y0 = parseInt(start[1])*scope.minuteheight+(parseInt(start[0])-scope.hours[0])*scope.rowheight;
     var end = lesson.end_time.split(":");
-    var y1 = parseInt(end[1])*that.minuteheight + (parseInt(end[0])-that.hours[0])*that.rowheight;
+    var y1 = parseInt(end[1])*scope.minuteheight + (parseInt(end[0])-scope.hours[0])*scope.rowheight;
 
     lesson.top = y0;
     lesson.height = y1-y0;
@@ -203,9 +205,8 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
     }
   };
 
-  $scope.getLessons = function(group,selected_date){
-      $scope.fetching_lessons_unfinished = true;
-      console.log("asoijdaiosjdasioj");
+  scope.getLessons = function(group,selected_date){
+      scope.fetching_lessons_unfinished = true;
       var url = "";
       if($scope.use_sample_data)
       {
@@ -228,17 +229,17 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
                       if(lesson.intersectinglessons)//For intersecting lessons.
                       {
                         lesson.intersectinglessons.forEach(function(intersectinglesson){
-                          that.calculateDimensions(intersectinglesson);
+                          scope.calculateDimensions(intersectinglesson);
                         });
                       }
                       else{
-                        that.calculateDimensions(lesson);
+                        scope.calculateDimensions(lesson);
                       }
                   });
               });
-              $.merge(that.lessons,data);
+              $.merge(scope.schooldays,data);
           }
-          $scope.fetching_lessons_unfinished = false;
+          scope.fetching_lessons_unfinished = false;
       });
   };
 });

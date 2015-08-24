@@ -1,4 +1,4 @@
-<select id='groupselector' name='group' ng-model='selectedgroup' ng-change='groupselected()' ng-options='group.name for group in lessons.groups track by group.id'>
+<select id='groupselector' name='group' ng-model='selectedgroup' ng-change='groupselected()' ng-options='group.name for group in lessonsctrl.groups track by group.id'>
   <option value="">Select group</option>
 </select>
-<span class='alert alert-danger alertspan' ng-show="groupNotFound" ng-cloak>Group not found.</span>
+<span class='alert alert-danger alertspan' ng-show="lessonsctrl.groupNotFound" ng-cloak>Group not found.</span>

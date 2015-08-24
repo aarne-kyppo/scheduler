@@ -1,11 +1,11 @@
 <div class="weekview">
-  <div ng-repeat='schoolday in lessons.lessons' on-render-finished=''>
+  <div ng-repeat='schoolday in lessonsctrl.schooldays' on-render-finished=''>
 
-    <div class='headers col-lg-1 col-md-1' ng-show="isNewWeek($index)">
+    <div class='headers col-lg-1 col-md-1' ng-show="lessonsctrl.isNewWeek($index)">
       <div class='dateheader'>
           <h3 class="schoolday">Week</h3>
       </div>
-      <div class='tthour' ng-repeat='hour in lessons.hours' ng-style='{height:  {{lessons.rowheight}} }'>
+      <div class='tthour' ng-repeat='hour in lessonsctrl.hours' ng-style='{height:  {{lessonsctrl.rowheight}} }'>
           <h2 class='row_start_time'> {{hour}} </h2>
       </div>
     </div>
@@ -13,7 +13,7 @@
         <div class='dateheader'>
             <h3>{{schoolday.weekday}} {{schoolday.finnishdate}}</h3>
         </div>
-        <div class='lessonsarea' ng-style="{height:  {{lessons.lessonsareaheight}} }">
+        <div class='lessonsarea' ng-style="{height:  {{lessonsctrl.lessonsareaheight}} }">
             <div ng-repeat='lesson in schoolday.lessons'>
               <div class='lessonsdiv' ng-if='lesson.start_time' ng-style='{top:  lesson.top , height:  lesson.height }'>
                 <div class='start_time_block'>
@@ -38,30 +38,30 @@
                     </p>
                 </div>
               </div>
-              <div class='lessonsdiv' ng-if='lesson.intersectinglessons' ng-style='{top:  getLesson(lesson).top , height:  getLesson(lesson).height }'>
+              <div class='lessonsdiv' ng-if='lesson.intersectinglessons' ng-style='{top:  lessonsctrl.getLesson(lesson).top , height:  lessonsctrl.getLesson(lesson).height }'>
                 <div class='start_time_block'>
                     <p class='start_time'>
-                      <span class="prevlink glyphicon glyphicon-menu-left" ng-click="getPrevLesson(lesson)"></span>
-                        {{getLesson(lesson).start_time}}
-                      <span class="nextlink glyphicon glyphicon-menu-right" ng-click="getNextLesson(lesson)"></span>
+                      <span class="prevlink glyphicon glyphicon-menu-left" ng-click="lessonsctrl.getPrevLesson(lesson)"></span>
+                        {{lessonsctrl.getLesson(lesson).start_time}}
+                      <span class="nextlink glyphicon glyphicon-menu-right" ng-click="lessonsctrl.getNextLesson(lesson)"></span>
                     </p>
                 </div>
                 <div class='content_block'>
                     <p>
-                        {{getLesson(lesson).title}}
+                        {{lessonsctrl.getLesson(lesson).title}}
                     </p>
                     <p>
-                       {{getLesson(lesson).course}}
+                       {{lessonsctrl.getLesson(lesson).course}}
                     </p>
                     <p>
-                      {{getLesson(lesson).lecturer}}
+                      {{lessonsctrl.getLesson(lesson).lecturer}}
                     </p>
                 </div>
                 <div class='end_time_block'>
                     <p class='end_time'>
-                      <span class="prevlink glyphicon glyphicon-menu-left" ng-click="getPrevLesson(lesson)"></span>
-                         {{getLesson(lesson).end_time}}
-                      <span class="nextlink glyphicon glyphicon-menu-right" ng-click="getNextLesson(lesson)"></span>
+                      <span class="prevlink glyphicon glyphicon-menu-left" ng-click="lessonsctrl.getPrevLesson(lesson)"></span>
+                         {{lessonsctrl.getLesson(lesson).end_time}}
+                      <span class="nextlink glyphicon glyphicon-menu-right" ng-click="lessonsctrl.getNextLesson(lesson)"></span>
                     </p>
                 </div>
               </div>
