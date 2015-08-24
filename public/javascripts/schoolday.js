@@ -84,6 +84,43 @@ app.directive('groups',function($compile){
     templateUrl: rooturl + '/angular-templates/groups.html',
   };
 });
+app.directive('intersectingLessons',function(){
+  return {
+    restrict: 'E',
+    require: '^LessonsController',
+    templateUrl: rooturl + '/angular-templates/intersectinglessons.html',
+    controller: function($scope){
+      $scope.getLesson = function(lessonarr){//For overlapping lessons only.
+        return lessonarr.intersectinglessons[lessonarr.selectedindex];
+      };
+      $scope.getNextLesson = function(lessonarr){//Navigation function for overlapping lessons.
+        lessonarr.selectedindex++;
+        if(lessonarr.selectedindex >= (lessonarr.intersectinglessons.length))
+        {
+          lessonarr.selectedindex = 0;
+          return lessonarr.intersectinglessons[0];
+        }
+        return lessonarr.intersectinglessons[lessonarr.selectedindex];
+      };
+      $scope.getPrevLesson = function(lessonarr){//Navigation function for overlapping lessons.
+        lessonarr.selectedindex--;
+        if(lessonarr.selectedindex < 0)
+        {
+          lessonarr.selectedindex = lessonarr.intersectinglessons.length-1;
+          return _.last(lessonarr.intersectinglessons);
+        }
+        return lessonarr.intersectinglessons[lessonarr.selectedindex];
+      };
+    },
+  }
+});
+app.directive('lesson',function(){
+  return {
+    restrict: 'E',
+    require: '^LessonsController',
+    templateUrl: rooturl + '/angular-templates/lesson.html',
+  }
+});
 app.directive('schoolDays',function(){
   return {
     template: "<ng-include src='lessonsctrl.getTemplate()'></ng-include>",//Template is different in weekview than in dayview.
@@ -140,7 +177,6 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
 
   /*
   * Functions for insersecting lessons.
-  */
   scope.getLesson = function(lessonarr){//For overlapping lessons only.
     return lessonarr.intersectinglessons[lessonarr.selectedindex];
   };
@@ -162,7 +198,7 @@ app.controller('LessonsController',function($scope,$http,$location){ //This cont
     }
     return lessonarr.intersectinglessons[lessonarr.selectedindex];
   };
-
+*/
 
   scope.changeView = function(){
       if(scope.isWeekView){
