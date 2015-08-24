@@ -1,0 +1,23 @@
+<div class='lessonsdiv' ng-if="lesson.start_time" ng-style='{top:  lesson.top , height:  lesson.height }'>
+  <div class='start_time_block'>
+      <p class='start_time'>
+          {{lesson.start_time}}
+      </p>
+  </div>
+  <div class='content_block'>
+      <p>
+          {{lesson.title}}
+      </p>
+      <p>
+         {{lesson.course}}
+      </p>
+      <p>
+        {{lesson.lecturer}}
+      </p>
+  </div>
+  <div class='end_time_block'>
+      <p class='end_time'>
+           {{lesson.end_time}}
+      </p>
+  </div>
+</div>

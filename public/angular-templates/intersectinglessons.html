@@ -1,0 +1,27 @@
+<div class='lessonsdiv' ng-if='lesson.intersectinglessons' ng-style='{top:  getLesson(lesson).top , height:  getLesson(lesson).height }'>
+  <div class='start_time_block'>
+      <p class='start_time'>
+        <span class="prevlink glyphicon glyphicon-menu-left" ng-click="getPrevLesson(lesson)"></span>
+          {{getLesson(lesson).start_time}}
+        <span class="nextlink glyphicon glyphicon-menu-right" ng-click="getNextLesson(lesson)"></span>
+      </p>
+  </div>
+  <div class='content_block'>
+      <p>
+          {{getLesson(lesson).title}}
+      </p>
+      <p>
+         {{getLesson(lesson).course}}
+      </p>
+      <p>
+        {{getLesson(lesson).lecturer}}
+      </p>
+  </div>
+  <div class='end_time_block'>
+      <p class='end_time'>
+        <span class="prevlink glyphicon glyphicon-menu-left" ng-click="getPrevLesson(lesson)"></span>
+           {{getLesson(lesson).end_time}}
+        <span class="nextlink glyphicon glyphicon-menu-right" ng-click="getNextLesson(lesson)"></span>
+      </p>
+  </div>
+</div>
